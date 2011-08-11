@@ -1,5 +1,7 @@
 package com.rafaelrinaldi.sound
 {
+	import com.rafaelrinaldi.abstract.IDispose;
+
 	/**
 	 * 
 	 * Available sound controls.
@@ -8,7 +10,7 @@ package com.rafaelrinaldi.sound
 	 * @since Aug 1, 2011
 	 *
 	 */
-	public class SoundControl
+	public class SoundControl implements IDispose
 	{
 		/** Sound volume before is muted. **/	
 		protected var originalVolume : int;

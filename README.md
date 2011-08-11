@@ -1,6 +1,6 @@
 [asdoc]: http://rafaelrinaldi.github.com/sound-manager/asdoc
-[license]: http://github.com/rafaelrinaldi/sound-manager/blob/master/license.txt
-[list]: http://github.com/rafaelrinaldi/list
+[license]: https://github.com/rafaelrinaldi/sound-manager/raw/master/license.txt
+[list]: https://github.com/rafaelrinaldi/list
 [fdt]: http://fdt.powerflasher.com
 
 # sound-manager

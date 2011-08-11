@@ -1,6 +1,7 @@
 [asdoc]: http://rafaelrinaldi.github.com/sound-manager/asdoc
 [license]: http://github.com/rafaelrinaldi/sound-manager/blob/master/license.txt
 [list]: http://github.com/rafaelrinaldi/list
+[fdt]: http://fdt.powerflasher.com
 
 # sound-manager
 Keep sound management intuitive and organized. Using [list][list] as base, offer a way to control sound organizing by groups or individual items.
@@ -45,3 +46,6 @@ For a complete code reference, check the [documentation][asdoc].
 ---
 ### License
 [WTFPL][license]
+
+---
+<small>Made with ♥ using [FDT][fdt].</small>

@@ -80,7 +80,7 @@ package com.rafaelrinaldi.sound
 		}
 
 		/** Cancel delay timeout. **/
-		public function cancel() : SoundControl
+		public function cancel() : SoundItem
 		{
 			clearTimeout(timeout);
 			

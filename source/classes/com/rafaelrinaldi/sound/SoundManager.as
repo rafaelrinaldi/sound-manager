@@ -57,7 +57,7 @@ package com.rafaelrinaldi.sound
 		 * @param p_id Item id.
 		 * @param p_value Item value.
 		 */
-		public function add( p_id : String, p_value : * ) : SoundManager
+		public function add( p_id : String, p_value : * = null ) : SoundItem
 		{
 			var sound : Sound;
 			
@@ -82,9 +82,12 @@ package com.rafaelrinaldi.sound
 				sound = new klass as Sound;
 			}
 			
-			list.add(p_id, new SoundItem(sound));
+			// <code>SoundItem</code> reference.
+			const item : SoundItem = new SoundItem(sound);
 			
-			return this;
+			list.add(p_id, item);
+			
+			return item;
 		}
 		
 		/**

@@ -35,6 +35,16 @@ Keep sound management intuitive and organized. Using [list][list] as base, offer
 	// Playing item "glow" and when completed shows a message.
 	sound().group("effects").item("glow").play().onComplete = function() : void { trace("Just finished playing 'glow'!") };
 	
+	// Start playing a stream.
+	sound().add("sit").load("http://domain/folder/1.mp3").play();
+
+	// Play a stream only when is loaded.
+	sound().add("amet").load("http://domain/folder/2.mp3").onLoad = loadHandler;
+
+	function loadHandler( event : Event ) : void {
+		sound().item("amet").play();
+	}
+	
 	// Managing global sound (SoundMixer). Stopping all existing sounds, including files who aren't being managed by SoundManager. 
 	sound().global().stop();
 	

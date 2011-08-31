@@ -1,6 +1,6 @@
 package com.rafaelrinaldi.sound
 {
-	import com.rafaelrinaldi.abstract.IDispose;
+	import com.rafaelrinaldi.abstract.IDisposable;
 
 	/**
 	 * 
@@ -10,7 +10,7 @@ package com.rafaelrinaldi.sound
 	 * @since Aug 1, 2011
 	 *
 	 */
-	public class SoundControl implements IDispose
+	public class SoundControl implements IDisposable
 	{
 		/** Sound volume before is muted. **/	
 		protected var originalVolume : int;
@@ -41,7 +41,7 @@ package com.rafaelrinaldi.sound
 		
 		/** Fired when something goes wrong. **/
 		public var onError : Function;
-		
+
 		/**
 		 * Play list items.
 		 * @param p_loops Loops. Use <strong>-1</strong> to loop forever (<strong>0</strong> by default).
@@ -52,7 +52,7 @@ package com.rafaelrinaldi.sound
 			isPlaying = true;
 			return this;
 		}
-
+		
 		/** Pause sound. **/
 		public function pause() : SoundControl
 		{

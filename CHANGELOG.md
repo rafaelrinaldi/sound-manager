@@ -17,7 +17,8 @@
 
  - Code refactoring.
  - Lots of tests.
-
+ - Updated SWC.
+ - Updated ASDoc.
 
 
 ## v0.2 (2011/08/30) ##

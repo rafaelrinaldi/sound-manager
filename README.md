@@ -6,6 +6,24 @@
 Keep sound management intuitive and organized. Using [list][list] as base, offer a way to control sound organizing by groups or individual items.
 
 ---
+### Available callbacks
+
+ - `onPlay` - Fired when sound is started.
+ - `onPause` - Fired when sound is paused.
+ - `onStop` - Fired when sound is stopped.
+ - `onCancel` - Fired when delay timeout is canceled.
+ - `onMute` - Fired when sound is muted.
+ - `onUnMute` - Fired when sound is unmuted.
+ - `onComplete` - Fired when sound is completed.
+ - `onError` - Fired when something goes wrong with the sound.
+ - `onLoad` - Fired when stream is loaded.
+ - `onID3` - Fired when ID3 is received.
+ - `onIOError` - Fired when something goes wrong on loading the stream.
+ - `onOpen` - Fired when stream is opened.
+ - `onProgress` - Fired when stream is being loaded.
+ - `onSampleData` - Fired when sample data is received.
+
+---
 ### Usage
 
 	// You can add a sound instance.
@@ -45,7 +63,7 @@ Keep sound management intuitive and organized. Using [list][list] as base, offer
 	}
 	
 	// Start playing a stream in a single line.
-	sound().add("consectetur").load("http://domain/folder/3.mp3").onProgress(progress).onLoad(load).onPlay(play).onPause(pause).onStop(stop).play();
+	sound().add("consectetur").load("http://domain/folder/3.mp3").onProgress(progress).onLoad(load).onPlay(play).onStop(stop).play();
 	
 	function progress( event : ProgressEvent ) : void {
 		trace("Loading sound file:" + event.bytesLoaded + " - " + event.bytesTotal);
@@ -57,10 +75,6 @@ Keep sound management intuitive and organized. Using [list][list] as base, offer
 	
 	function play() : void {
 		trace("Playing!");
-	}
-	
-	function pause() : void {
-		trace("Pausing!");
 	}
 	
 	function stop() : void {

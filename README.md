@@ -62,7 +62,7 @@ Keep sound management intuitive and organized. Using [list][list] as base, offer
 		sound().item("amet").play();
 	}
 	
-	// Start playing a stream in a single line.
+	// Start playing a stream in a single line. (idea sent via @hankpillow)
 	sound().add("consectetur").load("http://domain/folder/3.mp3").onProgress(progress).onLoad(load).onPlay(play).onStop(stop).play();
 	
 	function progress( event : ProgressEvent ) : void {

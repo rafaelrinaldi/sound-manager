@@ -1,4 +1,3 @@
-[asdoc]: http://rafaelrinaldi.github.com/sound-manager/asdoc
 [license]: https://github.com/rafaelrinaldi/sound-manager/raw/master/license.txt
 [list]: https://github.com/rafaelrinaldi/list
 [fdt]: http://fdt.powerflasher.com
@@ -51,7 +50,7 @@ Keep sound management intuitive and organized. Using [list][list] as base, offer
 	// Adding a simple mute/unmute control to context menu.
 	sound().addContextMenu(this);
 
-For a complete code reference, check the [documentation][asdoc].
+For a complete code reference, check the documentation at `/asdoc`.
 
 ---
 ### License

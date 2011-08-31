@@ -1,9 +1,10 @@
 package com.rafaelrinaldi.sound
 {
-	import flash.events.SampleDataEvent;
-	import flash.events.ProgressEvent;
-	import flash.events.IOErrorEvent;
+	import flash.events.ErrorEvent;
 	import flash.events.Event;
+	import flash.events.IOErrorEvent;
+	import flash.events.ProgressEvent;
+	import flash.events.SampleDataEvent;
 	import flash.media.Sound;
 	import flash.media.SoundChannel;
 	import flash.media.SoundLoaderContext;
@@ -45,29 +46,18 @@ package com.rafaelrinaldi.sound
 		/** Stream URL. **/
 		public var url : String;
 		
-		/** Fired when delay timeout is canceled. **/
-		public var onLoad : Function;
+		/** Available loading events. **/
+		protected const LOADING_EVENTS : Array = [Event.COMPLETE, Event.ID3, IOErrorEvent.IO_ERROR, Event.OPEN, ProgressEvent.PROGRESS, SampleDataEvent.SAMPLE_DATA];
 		
-		/** Fired when ID3 is received. **/
-		public var onID3 : Function;
-		
-		/** Fired when stream is unable to load. **/
-		public var onIOError : Function;
-		
-		/** Fired when stream is opened. **/
-		public var onOpen : Function;
-		
-		/** Fired when stream is being loaded. **/
-		public var onProgress : Function;
-		
-		/** Fired when stream is loaded. **/
-		public var onSampleData : Function;
+		/** Library with loading callbacks. **/
+		protected var loadingCallbacks : Object;
 		
 		/** @param p_sound Sound instance. **/
 		public function SoundItem( p_sound : Sound )
 		{
 			sound = p_sound;
 			lastPosition = 0;
+			loadingCallbacks = {};
 		}
 		
 		/**
@@ -79,29 +69,27 @@ package com.rafaelrinaldi.sound
 		{
 			try {
 				
-				stop();
+				if(channel != null) stop();
 				
-				sound.removeEventListener(Event.COMPLETE, loadHandler);
-				sound.removeEventListener(Event.ID3, id3Handler);
-				sound.removeEventListener(IOErrorEvent.IO_ERROR, ioErrorHandler);
-				sound.removeEventListener(Event.OPEN, openHandler);
-				sound.removeEventListener(ProgressEvent.PROGRESS, progressHandler);
-				sound.removeEventListener(SampleDataEvent.SAMPLE_DATA, sampleDataHandler);
+				// Removing all events.
+				LOADING_EVENTS.forEach(function( p_type : String, ...rest ) : void {
+					sound.removeEventListener(p_type, loadingEventHandler);
+				});
 				
-				// Close the sound stream if it has one.
-				sound.close();
+				if(sound != null) sound.close();
 				
 			} catch( error : Error ) {
 				// Nothing to close.
 			}
 			
+			// New sound instance.
 			sound = new Sound;
-			sound.addEventListener(Event.COMPLETE, loadHandler);
-			sound.addEventListener(Event.ID3, id3Handler);
-			sound.addEventListener(IOErrorEvent.IO_ERROR, ioErrorHandler);
-			sound.addEventListener(Event.OPEN, openHandler);
-			sound.addEventListener(ProgressEvent.PROGRESS, progressHandler);
-			sound.addEventListener(SampleDataEvent.SAMPLE_DATA, sampleDataHandler);
+			
+			// Adding all events.
+			LOADING_EVENTS.forEach(function( p_type : String, ...rest ) : void {
+				sound.addEventListener(p_type, loadingEventHandler);
+			});
+			
 			sound.load(new URLRequest(url = p_url), p_context);
 			
 			return this;
@@ -127,8 +115,9 @@ package com.rafaelrinaldi.sound
 		/** Pause sound. **/
 		override public function pause() : SoundControl
 		{
-			channel.stop();
 			lastPosition = channel.position;
+			
+			channel.stop();
 			
 			return super.pause();
 		}
@@ -137,7 +126,8 @@ package com.rafaelrinaldi.sound
 		override public function stop() : SoundControl
 		{
 			lastPosition = 0;
-			channel.stop();
+			
+			if(channel != null) channel.stop();
 			
 			return super.stop();
 		}
@@ -147,8 +137,69 @@ package com.rafaelrinaldi.sound
 		{
 			clearTimeout(timeout);
 			
-			if(onCancel != null) onCancel();
-			
+			const callback : Function = controlCallbacks["cancel"];
+			if(callback != null) callback.call();
+						
+			return this;
+		}
+		
+		/**
+		 * Fired when stream is loaded.
+		 * @param p_callBack Callback to be fired.
+		 */
+		public function onLoad( p_callBack : Function ) : SoundItem
+		{
+			loadingCallbacks[Event.COMPLETE] = p_callBack;
+			return this;
+		}
+
+		/**
+		 * Fired when ID3 is received.
+		 * @param p_callBack Callback to be fired.
+		 */
+		public function onID3( p_callBack : Function ) : SoundItem
+		{
+			loadingCallbacks[Event.ID3] = p_callBack;
+			return this;
+		}
+
+		/**
+		 * Fired when something goes wrong on loading the stream.
+		 * @param p_callBack Callback to be fired.
+		 */
+		public function onIOError( p_callBack : Function ) : SoundItem
+		{
+			loadingCallbacks[IOErrorEvent.IO_ERROR] = p_callBack;
+			return this;
+		}
+
+		/**
+		 * Fired when stream is opened.
+		 * @param p_callBack Callback to be fired.
+		 */
+		public function onOpen( p_callBack : Function ) : SoundItem
+		{
+			loadingCallbacks[Event.OPEN] = p_callBack;
+			return this;
+		}
+		
+		/**
+		 * Fired when stream is being loaded.
+		 * @param p_callBack Callback to be fired.
+		 */
+		public function onProgress( p_callBack : Function ) : SoundItem
+		{
+			loadingCallbacks[ProgressEvent.PROGRESS] = p_callBack;
+			return this;
+		}
+
+		/**
+		 * Fired when sample data is received.
+		 * @param p_callBack Callback to be fired.
+		 */
+		public function onSampleData( p_callBack : Function ) : SoundItem
+		{
+			loadingCallbacks[SampleDataEvent.SAMPLE_DATA] = p_callBack;
 			return this;
 		}
 		
@@ -187,68 +238,51 @@ package com.rafaelrinaldi.sound
 			channel.soundTransform = new SoundTransform(volume, value);
 		}
 
-		/** @private **/
-		protected function loadHandler( event : Event ) : void
+		/**
+		 * Handle all loading events.
+		 * @private
+		 */
+		protected function loadingEventHandler( event : Event ) : void
 		{
-			if(onLoad != null) onLoad(event);
+			//trace('loadingEventHandler', event.type)
+			const callback : Function = loadingCallbacks[event.type];
+			if(callback != null) callback.apply(this, [event]);
 		}
 
-		/** @private **/
-		protected function id3Handler( event : Event ) : void
-		{
-			if(onID3 != null) onID3(event);
-		}
-
-		/** @private **/
-		protected function ioErrorHandler( event : IOErrorEvent ) : void
-		{
-			if(onIOError != null) onIOError(event);
-		}
-
-		/** @private **/
-		protected function openHandler( event : Event ) : void
-		{
-			if(onOpen != null) onOpen(event);
-		}
-		
-		/** @private **/
-		protected function progressHandler( event : ProgressEvent ) : void
-		{
-			if(onProgress != null) onProgress(event);
-		}
-
-		/** @private **/
-		protected function sampleDataHandler( event : SampleDataEvent ) : void
-		{
-			if(onSampleData != null) onSampleData(event);
-		}
-		
 		/** @private **/
 		protected function playHandler() : void
 		{
+			var callback : Function;
+			
 			try {
 				
 				channel = sound.play(lastPosition, loops);
 				channel.addEventListener(Event.SOUND_COMPLETE, soundCompleteHandler);
 				
-				if(onPlay != null) onPlay();
+				callback = controlCallbacks["play"];
+				if(callback != null) callback.call();
 				
 			} catch( error : Error ) {
 				
 				trace("[SoundItem] There was a problem playing", this);
 				
-				if(onError != null) onError(error);
+				callback = controlCallbacks[ErrorEvent.ERROR];
+				if(callback != null) callback.apply(this, [error]);
 				
 			}
 		}
 
-		/** @private **/
+		/**
+		 * Handle <code>Event.SOUND_COMPLETE</code>.
+		 * @private
+		 */
 		protected function soundCompleteHandler( event : Event ) : void
 		{
 			isPlaying = false;
 			lastPosition = 0;
 			
-			if(onComplete != null) onComplete(event);
+			const callback : Function = controlCallbacks[Event.SOUND_COMPLETE];
+			if(callback != null) callback.apply(this, [event]);
 		}
 
 		/** Clear from memory. **/
@@ -256,14 +290,10 @@ package com.rafaelrinaldi.sound
 		{
 			cancel();
 			
-			onLoad = null;
-			onID3 = null;
-			onIOError = null;
-			onOpen = null;
-			onProgress = null;
-			onSampleData = null;
+			loadingCallbacks = null;
 			
 			if(channel != null) {
+				channel.removeEventListener(Event.SOUND_COMPLETE, soundCompleteHandler);
 				channel.stop();
 				channel = null;
 			}

@@ -44,11 +44,11 @@ package com.rafaelrinaldi.sound
 		{
 			if(p_status == STATUS_MUTED) {
 				status = STATUS_UNMUTED;
-				sound().global().unmute();
 			} else if(p_status == STATUS_UNMUTED) {
 				status = STATUS_MUTED;
-				sound().global().mute();
 			}
+			
+			sound().global().toggleMute();
 			
 			(menu.customItems[0] as ContextMenuItem).caption = status;
 		}

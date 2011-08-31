@@ -2,6 +2,9 @@ package com.rafaelrinaldi.sound
 {
 	import com.rafaelrinaldi.abstract.IDisposable;
 
+	import flash.events.ErrorEvent;
+	import flash.events.Event;
+
 	/**
 	 * 
 	 * Available sound controls.
@@ -18,30 +21,14 @@ package com.rafaelrinaldi.sound
 		/** Is sound playing? **/
 		public var isPlaying : Boolean;
 		
-		/** Fired when sound is started. **/
-		public var onPlay : Function;
-		
-		/** Fired when sound is paused. **/
-		public var onPause : Function;
-		
-		/** Fired when sound is stopped. **/
-		public var onStop : Function;
-		
-		/** Fired when delay timeout is canceled. **/
-		public var onCancel : Function;
-		
-		/** Fired when sound is muted. **/
-		public var onMute : Function;
-		
-		/** Fired when delay timeout is unmuted. **/
-		public var onUnMute : Function;
-		
-		/** Fired when sound is completed. **/
-		public var onComplete : Function;
-		
-		/** Fired when something goes wrong. **/
-		public var onError : Function;
+		/** Library with control callbacks. **/
+		protected var controlCallbacks : Object;
 
+		public function SoundControl()
+		{
+			controlCallbacks = {};
+		}
+		
 		/**
 		 * Play list items.
 		 * @param p_loops Loops. Use <strong>-1</strong> to loop forever (<strong>0</strong> by default).
@@ -50,6 +37,10 @@ package com.rafaelrinaldi.sound
 		public function play( p_loops : int = 0, p_delay : int = 0 ) : SoundControl
 		{
 			isPlaying = true;
+			
+			const callback : Function = controlCallbacks["play"];
+			if(callback != null) callback.call();
+			
 			return this;
 		}
 		
@@ -58,7 +49,8 @@ package com.rafaelrinaldi.sound
 		{
 			isPlaying = false;
 			
-			if(onPause != null) onPause();
+			const callback : Function = controlCallbacks["pause"];
+			if(callback != null) callback.call();
 			
 			return this;
 		}
@@ -68,7 +60,8 @@ package com.rafaelrinaldi.sound
 		{
 			isPlaying = false;
 			
-			if(onStop != null) onStop();
+			const callback : Function = controlCallbacks["stop"];
+			if(callback != null) callback.call();
 			
 			return this;
 		}
@@ -79,7 +72,8 @@ package com.rafaelrinaldi.sound
 			originalVolume = volume;
 			volume = 0;
 			
-			if(onMute != null) onMute();
+			const callback : Function = controlCallbacks["mute"];
+			if(callback != null) callback.call();
 			
 			return this;
 		}
@@ -89,8 +83,98 @@ package com.rafaelrinaldi.sound
 		{
 			volume = originalVolume || 1;
 			
-			if(onUnMute != null) onUnMute();
+			const callback : Function = controlCallbacks["unmute"];
+			if(callback != null) callback.call();
 			
+			return this;
+		}
+
+		/** Toggle mute/unmute sound. **/
+		public function toggleMute() : void
+		{
+			if(volume == 0)
+				unmute();
+			else
+				mute();
+		}
+
+		/**
+		 * Fired when sound is started.
+		 * @param p_callBack Callback to be fired.
+		 */
+		public function onPlay( p_callBack : Function ) : SoundControl
+		{
+			controlCallbacks["play"] = p_callBack;
+			return this;
+		}
+
+		/**
+		 * Fired when sound is paused.
+		 * @param p_callBack Callback to be fired.
+		 */
+		public function onPause( p_callBack : Function ) : SoundControl
+		{
+			controlCallbacks["pause"] = p_callBack;
+			return this;
+		}
+
+		/**
+		 * Fired when sound is stopped.
+		 * @param p_callBack Callback to be fired.
+		 */
+		public function onStop( p_callBack : Function ) : SoundControl
+		{
+			controlCallbacks["stop"] = p_callBack;
+			return this;
+		}
+
+		/**
+		 * Fired when delay timeout is canceled.
+		 * @param p_callBack Callback to be fired.
+		 */
+		public function onCancel( p_callBack : Function ) : SoundControl
+		{
+			controlCallbacks["cancel"] = p_callBack;
+			return this;
+		}
+
+		/**
+		 * Fired when sound is muted.
+		 * @param p_callBack Callback to be fired.
+		 */
+		public function onMute( p_callBack : Function ) : SoundControl
+		{
+			controlCallbacks["mute"] = p_callBack;
+			return this;
+		}
+
+		/**
+		 * Fired when sound is unmuted.
+		 * @param p_callBack Callback to be fired.
+		 */
+		public function onUnMute( p_callBack : Function ) : SoundControl
+		{
+			controlCallbacks["unmute"] = p_callBack;
+			return this;
+		}
+
+		/**
+		 * Fired when sound is completed.
+		 * @param p_callBack Callback to be fired.
+		 */
+		public function onComplete( p_callBack : Function ) : SoundControl
+		{
+			controlCallbacks[Event.SOUND_COMPLETE] = p_callBack;
+			return this;
+		}
+
+		/**
+		 * Fired when something goes wrong with the sound.
+		 * @param p_callBack Callback to be fired.
+		 */
+		public function onError( p_callBack : Function ) : SoundControl
+		{
+			controlCallbacks[ErrorEvent.ERROR] = p_callBack;
 			return this;
 		}
 
@@ -119,14 +203,7 @@ package com.rafaelrinaldi.sound
 		/** Clear from memory. **/
 		public function dispose() : void
 		{
-			onPlay = null;
-			onPause = null;
-			onStop = null;
-			onCancel = null;
-			onMute = null;
-			onUnMute = null;
-			onComplete = null;
-			onError = null;
+			controlCallbacks = null;
 		}
 
 	}

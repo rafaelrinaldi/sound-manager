@@ -2,6 +2,24 @@
 
 
 
+## v0.3 (2011/08/31) ##
+
+### API Changes ###
+
+ - Added `toggleMute()` method.
+ - Improved chain structure a lot. Now you're able to do everything in a single line.
+
+### Fixes ###
+
+ - Fixed a problem when getting channel sound position.
+
+### Others ###
+
+ - Code refactoring.
+ - Lots of tests.
+
+
+
 ## v0.2 (2011/08/30) ##
 
 ### API Changes ###

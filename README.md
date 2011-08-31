@@ -44,6 +44,29 @@ Keep sound management intuitive and organized. Using [list][list] as base, offer
 		sound().item("amet").play();
 	}
 	
+	// Start playing a stream in a single line.
+	sound().add("consectetur").load("http://domain/folder/3.mp3").onProgress(progress).onLoad(load).onPlay(play).onPause(pause).onStop(stop).play();
+	
+	function progress( event : ProgressEvent ) : void {
+		trace("Loading sound file:" + event.bytesLoaded + " - " + event.bytesTotal);
+	}
+	
+	function load( event : Event ) : void {
+		trace("File was loaded!", event);
+	}
+	
+	function play() : void {
+		trace("Playing!");
+	}
+	
+	function pause() : void {
+		trace("Pausing!");
+	}
+	
+	function stop() : void {
+		trace("Stopping!");
+	}
+	
 	// Managing global sound (SoundMixer). Stopping all existing sounds, including files who aren't being managed by SoundManager. 
 	sound().global().stop();
 	

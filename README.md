@@ -55,13 +55,6 @@ Keep sound management intuitive and organized. Using [list][list] as base, offer
 	// Start playing a stream.
 	sound().add("sit").load("http://domain/folder/1.mp3").play();
 
-	// Play a stream only when is loaded.
-	sound().add("amet").load("http://domain/folder/2.mp3").onLoad = loadHandler;
-
-	function loadHandler( event : Event ) : void {
-		sound().item("amet").play();
-	}
-	
 	// Start playing a stream in a single line. (idea sent via @hankpillow)
 	sound().add("consectetur").load("http://domain/folder/3.mp3").onProgress(progress).onLoad(load).onPlay(play).onStop(stop).play();
 	

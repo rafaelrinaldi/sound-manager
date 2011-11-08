@@ -1,6 +1,12 @@
 # sound-manager Changelog #
 
+## v0.4 (2011/11/08) ##
 
+### API Changes ###
+
+ - `position` now is a read-write property so now you're able to seek.
+ - `positionPercent` can seek the sound based on percent value (from 0 to 1).
+ - Added `togglePlay()` method to toggle between play/pause without checking values manually.
 
 ## v0.3 (2011/08/31) ##
 

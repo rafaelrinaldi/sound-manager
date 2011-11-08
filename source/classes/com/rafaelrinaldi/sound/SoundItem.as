@@ -41,7 +41,7 @@ package com.rafaelrinaldi.sound
 		protected var timeout : int;
 		
 		/** Last position occurrence. **/
-		public var lastPosition : int;
+		public var lastPosition : Number;
 		
 		/** Stream URL. **/
 		public var url : String;
@@ -203,36 +203,63 @@ package com.rafaelrinaldi.sound
 			return this;
 		}
 		
+		/** @return Sound length. **/
+		public function get length() : Number
+		{
+			if(sound == null) return 0;
+			return sound.length;
+		}
+		
 		/** @return Sound position. **/
-		public function get position() : int
+		public function get position() : Number
 		{
 			if(channel == null) return 0;
 			return channel.position;
 		}
 		
+		/** Seek to position value. **/
+		public function set position( value : Number ) : void
+		{
+			stop();
+			lastPosition = value;
+			play();
+		}
+		
+		/** @return Position progress percentage. **/
+		public function get positionPercent() : Number
+		{
+			return position / length;
+		}
+		
+		/** Seek to position percentage. **/
+		public function set positionPercent( value : Number ) : void
+		{
+			position = length * value;
+		}
+		
 		/** @return Sound volume. **/
-		override public function get volume() : int
+		override public function get volume() : Number
 		{
 			if(channel == null) return 0;
 			return channel.soundTransform.volume;
 		}
 
 		/** Sound volume setter. **/
-		override public function set volume( value : int ) : void
+		override public function set volume( value : Number ) : void
 		{
 			if(channel == null) return;
 			channel.soundTransform = new SoundTransform(value, pan);
 		}
 		
 		/** @return Sound pan. **/
-		override public function get pan() : int
+		override public function get pan() : Number
 		{
 			if(channel == null) return 0;
 			return channel.soundTransform.pan;
 		}
 		
 		/** Sound pan setter. **/
-		override public function set pan( value : int ) : void
+		override public function set pan( value : Number ) : void
 		{
 			if(channel == null) return;
 			channel.soundTransform = new SoundTransform(volume, value);

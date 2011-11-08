@@ -16,7 +16,7 @@ package com.rafaelrinaldi.sound
 	public class SoundControl implements IDisposable
 	{
 		/** Sound volume before is muted. **/	
-		protected var originalVolume : int;
+		protected var originalVolume : Number;
 		
 		/** Is sound playing? **/
 		public var isPlaying : Boolean;
@@ -96,6 +96,15 @@ package com.rafaelrinaldi.sound
 				unmute();
 			else
 				mute();
+		}
+
+		/** Toggle play/pause controls. **/
+		public function togglePlay() : void
+		{
+			if(isPlaying)
+				pause();
+			else
+				play();
 		}
 
 		/**
@@ -179,24 +188,24 @@ package com.rafaelrinaldi.sound
 		}
 
 		/** Volume getter. **/
-		public function get volume() : int
+		public function get volume() : Number
 		{
 			return 0;
 		}
 		
 		/** Volume setter. **/
-		public function set volume( value : int ) : void
+		public function set volume( value : Number ) : void
 		{
 		}
 		
 		/** Pan getter. **/
-		public function get pan() : int
+		public function get pan() : Number
 		{
 			return 0;
 		}
 		
 		/** Pan setter. **/
-		public function set pan( value : int ) : void
+		public function set pan( value : Number ) : void
 		{
 		}
 

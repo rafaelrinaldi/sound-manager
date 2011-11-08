@@ -22,25 +22,25 @@ package com.rafaelrinaldi.sound
 		}
 		
 		/** @return Current volume. **/
-		override public function get volume() : int
+		override public function get volume() : Number
 		{
 			return SoundMixer.soundTransform.volume;
 		}
 		
 		/** Current volume setter. **/
-		override public function set volume( value : int ) : void
+		override public function set volume( value : Number ) : void
 		{
 			SoundMixer.soundTransform = new SoundTransform(value, pan);
 		}
 		
 		/** @return Current pan. **/
-		override public function get pan() : int
+		override public function get pan() : Number
 		{
 			return SoundMixer.soundTransform.pan;
 		}
 		
 		/** Current pan setter. **/
-		override public function set pan( value : int ) : void
+		override public function set pan( value : Number ) : void
 		{
 			SoundMixer.soundTransform = new SoundTransform(volume, value);
 		}

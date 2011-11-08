@@ -163,32 +163,32 @@ package com.rafaelrinaldi.sound
 		}
 		
 		/** @return List length. **/
-		public function get length() : int
+		public function get length() : Number
 		{
 			return list.length;
 		}
 		
 		/** @return List volume. **/
-		override public function get volume() : int
+		override public function get volume() : Number
 		{
 			// Use the first item of list as reference.
 			return (list.index(0) as SoundItem).volume;
 		}
 		
 		/** List volume setter. **/
-		override public function set volume( value : int ) : void
+		override public function set volume( value : Number ) : void
 		{
 			for each(var item : ListItem in list.items) (item.value as SoundItem).volume = value;
 		}
 		
 		/** @return List pan. **/
-		override public function get pan() : int
+		override public function get pan() : Number
 		{
 			return (list.index(0) as SoundItem).pan;
 		}
 		
 		/** List pan setter. **/
-		override public function set pan( value : int ) : void
+		override public function set pan( value : Number ) : void
 		{
 			for each(var item : ListItem in list.items) (item.value as SoundItem).pan = value;
 		}

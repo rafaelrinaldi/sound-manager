@@ -1,3 +1,6 @@
+> # Deprecation notice :rotating_light:
+> This project is no longer being maintened by me. If you want to take ownership over it, just [ping me](https://github.com/rafaelrinaldi/contact).
+
 [license]: https://github.com/rafaelrinaldi/sound-manager/raw/master/license.txt
 [list]: https://github.com/rafaelrinaldi/list
 [fdt]: http://fdt.powerflasher.com
